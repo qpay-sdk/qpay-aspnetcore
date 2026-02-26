@@ -11,6 +11,6 @@ jobs:
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
-      - run: dotnet build -c Release
-      - run: dotnet pack -c Release -o out
+      - run: dotnet build QPay.AspNetCore.csproj -c Release
+      - run: dotnet pack QPay.AspNetCore.csproj -c Release -o out
       - run: dotnet nuget push out/*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json
