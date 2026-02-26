@@ -12,4 +12,8 @@
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="QPay" Version="1.0.0" />
   </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="QPay.AspNetCore.Tests/**" />
+    <None Remove="QPay.AspNetCore.Tests/**" />
+  </ItemGroup>
 </Project>
