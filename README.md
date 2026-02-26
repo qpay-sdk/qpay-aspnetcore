@@ -2,6 +2,7 @@
 
 [![NuGet](https://img.shields.io/nuget/v/QPay.AspNetCore)](https://www.nuget.org/packages/QPay.AspNetCore)
 [![CI](https://github.com/qpay-sdk/qpay-aspnetcore/actions/workflows/ci.yml/badge.svg)](https://github.com/qpay-sdk/qpay-aspnetcore/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
 QPay V2 payment integration for ASP.NET Core.
 
