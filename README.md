@@ -1,5 +1,8 @@
 # QPay.AspNetCore
 
+[![NuGet](https://img.shields.io/nuget/v/QPay.AspNetCore)](https://www.nuget.org/packages/QPay.AspNetCore)
+[![CI](https://github.com/qpay-sdk/qpay-aspnetcore/actions/workflows/ci.yml/badge.svg)](https://github.com/qpay-sdk/qpay-aspnetcore/actions)
+
 QPay V2 payment integration for ASP.NET Core.
 
 ## Install
