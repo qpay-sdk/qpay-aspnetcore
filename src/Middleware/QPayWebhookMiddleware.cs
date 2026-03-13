@@ -1,4 +1,3 @@
-using System.Text.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using QPay.Models;
@@ -18,15 +17,15 @@ public class QPayWebhookMiddleware
 
     public async Task InvokeAsync(HttpContext context, IQPayService qpay)
     {
-        if (context.Request.Method == "POST" && context.Request.Path.Equals(_webhookPath, StringComparison.OrdinalIgnoreCase))
+        if (context.Request.Method == "GET" && context.Request.Path.Equals(_webhookPath, StringComparison.OrdinalIgnoreCase))
         {
-            var body = await JsonSerializer.DeserializeAsync<JsonElement>(context.Request.Body);
-            var invoiceId = body.TryGetProperty("invoice_id", out var id) ? id.GetString() : null;
+            var paymentId = context.Request.Query["qpay_payment_id"].ToString();
 
-            if (string.IsNullOrEmpty(invoiceId))
+            if (string.IsNullOrEmpty(paymentId))
             {
                 context.Response.StatusCode = 400;
-                await context.Response.WriteAsJsonAsync(new { error = "Missing invoice_id" });
+                context.Response.ContentType = "text/plain";
+                await context.Response.WriteAsync("Missing qpay_payment_id");
                 return;
             }
 
@@ -35,7 +34,7 @@ public class QPayWebhookMiddleware
                 var result = await qpay.CheckPaymentAsync(new PaymentCheckRequest
                 {
                     ObjectType = "INVOICE",
-                    ObjectId = invoiceId,
+                    ObjectId = paymentId,
                 });
 
                 var handler = context.RequestServices.GetService(typeof(IQPayEventHandler)) as IQPayEventHandler;
@@ -45,18 +44,21 @@ public class QPayWebhookMiddleware
                 {
                     await handler.HandlePaymentAsync(new QPayPaymentEvent
                     {
-                        InvoiceId = invoiceId,
+                        InvoiceId = paymentId,
                         IsPaid = isPaid,
                         Result = result,
                     });
                 }
 
-                await context.Response.WriteAsJsonAsync(new { status = isPaid ? "paid" : "unpaid" });
+                context.Response.StatusCode = 200;
+                context.Response.ContentType = "text/plain";
+                await context.Response.WriteAsync("SUCCESS");
             }
             catch (Exception ex)
             {
                 context.Response.StatusCode = 500;
-                await context.Response.WriteAsJsonAsync(new { error = ex.Message });
+                context.Response.ContentType = "text/plain";
+                await context.Response.WriteAsync(ex.Message);
             }
             return;
         }
